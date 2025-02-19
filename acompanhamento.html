@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forma de Pagamento</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Escolha a Forma de Pagamento</h1>
+    </header>
+    
+    <section id="pagamento">
+        <h2>Total da compra: R$ <span id="totalCompra">0.00</span></h2>
+
+        <h2>Selecione o método:</h2>
+        <button onclick="gerarCodigoPix()">💳 PIX</button>
+        <button onclick="finalizarPagamento('Cartão')">💳 Cartão</button>
+        <button onclick="finalizarPagamento('Dinheiro')">💵 Dinheiro</button>
+        
+        <div id="pixContainer" style="display: none; margin-top: 20px;">
+            <p><strong>Use este código para pagamento via PIX:</strong></p>
+            <p id="pixCode" style="font-weight: bold; word-wrap: break-word; background-color: #f3f3f3; padding: 10px; border-radius: 5px;"></p>
+            <button onclick="finalizarPagamento('PIX')">Confirmar Pagamento</button>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById("totalCompra").innerText = localStorage.getItem("totalCompra") || "0.00";
+
+        function gerarCodigoPix() {
+            let valor = localStorage.getItem("totalCompra") || "0.00";
+            let codigoPix = "00020126330014BR.GOV.BCB.PIX0114+559999999999520400005303986540" + valor.replace(",", ".") + "5802BR5922Quitandas Senai6009BeloHoriz62540510PEDIDO12345678";
+
+            document.getElementById("pixCode").innerText = codigoPix;
+            document.getElementById("pixContainer").style.display = "block";
+        }
+
+        function finalizarPagamento(metodo) {
+            alert("Pedido finalizado! Forma de pagamento: " + metodo);
+            window.location.href = "acompanhamento.html"; // Redireciona para acompanhamento
+        }
+    </script>
+</body>
+</html>

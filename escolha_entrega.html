@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha o Tipo de Entrega</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Escolha o Tipo de Entrega</h1>
+    </header>
+    
+    <section id="tipo-entrega">
+        <h2>Como deseja receber seu pedido?</h2>
+        <button onclick="escolherEntrega('Retirada')">🏠 Retirada</button>
+        <button onclick="escolherEntrega('Entrega')">🚚 Entrega</button>
+    </section>
+
+    <script>
+        function escolherEntrega(opcao) {
+            localStorage.setItem("tipoEntrega", opcao);
+
+            if (opcao === "Retirada") {
+                window.location.href = "pagamento.html"; // Vai para pagamento direto
+            } else {
+                window.location.href = "endereco.html"; // Pede endereço antes de pagar
+            }
+        }
+    </script>
+</body>
+</html>
