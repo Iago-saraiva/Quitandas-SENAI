@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | Quitandas SENAI{% endblock %}
+
+{% block content %}
+    <section id="login">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="loginEmail">E-mail:</label>
+            <input type="email" id="loginEmail" required>
+            
+            <label for="loginSenha">Senha:</label>
+            <input type="password" id="loginSenha" required>
+            
+            <button type="submit">Entrar</button>
+        </form>
+        <p>Não tem uma conta? <a href="#" onclick="mostrarCadastro()">Cadastre-se</a></p>
+    </section>
+
+    <section id="cadastro" style="display: none;">
+        <h2>Cadastrar</h2>
+        <form id="cadastroForm">
+            <label for="cadastroNome">Nome:</label>
+            <input type="text" id="cadastroNome" required>
+
+            <label for="cadastroEmail">E-mail:</label>
+            <input type="email" id="cadastroEmail" required>
+
+            <label for="cadastroSenha">Senha:</label>
+            <input type="password" id="cadastroSenha" required>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+        <p>Já tem uma conta? <a href="#" onclick="mostrarLogin()">Faça login</a></p>
+    </section>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("loginForm").addEventListener("submit", login);
+        document.getElementById("cadastroForm").addEventListener("submit", cadastrar);
+    });
+
+    function mostrarCadastro() {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("cadastro").style.display = "block";
+    }
+
+    function mostrarLogin() {
+        document.getElementById("cadastro").style.display = "none";
+        document.getElementById("login").style.display = "block";
+    }
+
+    function cadastrar(event) {
+        event.preventDefault();
+
+        const nome = document.getElementById("cadastroNome").value;
+        const email = document.getElementById("cadastroEmail").value;
+        const senha = document.getElementById("cadastroSenha").value;
+
+        let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+        if (usuarios.find(user => user.email === email)) {
+            alert("Este e-mail já está cadastrado!");
+            return;
+        }
+
+        usuarios.push({ nome, email, senha });
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+        alert("Cadastro realizado com sucesso!");
+        mostrarLogin();
+    }
+
+    function login(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("loginEmail").value;
+    const senha = document.getElementById("loginSenha").value;
+
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    const usuario = usuarios.find(user => user.email === email && user.senha === senha);
+
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `email=${email}&senha=${senha}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message);
+            window.location.href = "compras.html"; // Redireciona para a página de compras
+        } else {
+            alert(data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+    }
+
+</script>
+{% endblock %}

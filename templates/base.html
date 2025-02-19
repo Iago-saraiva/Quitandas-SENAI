@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Quitandas SENAI{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Quitandas SENAI</h1>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- O conteúdo de cada página será inserido aqui -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Quitandas SENAI - Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
