@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Quitandas SENAI{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
 
@@ -14,7 +15,6 @@
 
     <main>
         {% block content %}
-        <!-- O conteúdo de cada página será inserido aqui -->
         {% endblock %}
     </main>
 

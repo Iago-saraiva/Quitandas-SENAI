@@ -3,15 +3,18 @@ import sqlite3
 conn = sqlite3.connect('quitandas.db')
 c = conn.cursor()
 
-# Criação da tabela de usuários
+# Create users table
 c.execute('''
-    CREATE TABLE IF NOT EXISTS usuarios (
+    CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
+        name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        senha TEXT NOT NULL
+        password TEXT NOT NULL
     )
 ''')
+
+# Create product table
+
 
 conn.commit()
 conn.close()

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Escolha o Tipo de Entrega{% endblock %}
+
+{% block content %}
+<section id="tipo-entrega">
+    <h2>Como deseja receber seu pedido?</h2>
+    <button onclick="escolherEntrega('Retirada')">🏠 Retirada</button>
+    <button onclick="escolherEntrega('Entrega')">🚚 Entrega</button>
+</section>
+
+<script>
+    function escolherEntrega(opcao) {
+        localStorage.setItem("tipoEntrega", opcao);
+
+        if (opcao === "Retirada") {
+            window.location.href = "/pagamento/"; // Vai para pagamento direto
+        } else {
+            window.location.href = "/endereco/"; // Pede endereço antes de pagar
+        }
+    }
+</script>
+{% endblock %}

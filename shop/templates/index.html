@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | Quitandas SENAI{% endblock %}
+
+{% block content %}
+    <section id="login">
+        <h2>Login</h2>
+        <form id="loginForm" method="POST" action="/login/">
+            {% csrf_token %}
+            <label for="loginEmail">E-mail:</label>
+            <input type="email" id="loginEmail" name="email" required>
+            
+            <label for="loginSenha">Senha:</label>
+            <input type="password" id="loginSenha" name="senha" required>
+            
+            <button style="margin-top: 20px;" type="submit">Entrar</button>
+        </form>
+        <p align="center" style="padding: 10px;">Não tem uma conta? <a href="#" onclick="document.getElementById('login').style.display='none'; document.getElementById('cadastro').style.display='block';">Cadastre-se</a></p>
+    </section>
+
+    <section id="cadastro" style="display: none;">
+        <h2>Cadastrar</h2>
+        <form id="cadastroForm" method="POST" action="/register/">
+            {% csrf_token %}
+            <label for="cadastroNome">Nome:</label>
+            <input type="text" id="cadastroNome" name="nome" required>
+
+            <label for="cadastroEmail">E-mail:</label>
+            <input type="email" id="cadastroEmail" name="email" required>
+
+            <label for="cadastroSenha">Senha:</label>
+            <input type="password" id="cadastroSenha" name="senha" required>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+        <p>Já tem uma conta? <a href="#" onclick="document.getElementById('cadastro').style.display='none'; document.getElementById('login').style.display='block';">Faça login</a></p>
+    </section>
+
+    <script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        fetch('/login/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                window.location.href = '/compras/';
+            } else if (data.error) {
+                alert(data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        fetch('/register/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                window.location.href = '/compras/';
+            } else if (data.error) {
+                alert(data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    </script>
+{% endblock %}

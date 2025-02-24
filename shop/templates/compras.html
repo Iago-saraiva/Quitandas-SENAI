@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Compras | Quitandas SENAI{% endblock %}
+
+{% block content %}
+    <section id="produtos">
+        <h2>Nosso Catálogo</h2>
+        {% for produto in products %}
+        <div class="produto">
+            <img src="{{ produto.photo.url }}" alt="{{ produto.name }}">
+            <h3>{{ produto.name }}</h3>
+            <p>{{ produto.description }}</p>
+            <p>R$ {{ produto.price }}</p>
+            <button onclick="adicionarAoCarrinho({{ produto.id }})">Adicionar ao Carrinho</button>
+        </div>
+        {% endfor %}
+    </section>
+
+    <section id="carrinho">
+        <h2>Seu Carrinho</h2>
+        <ul id="lista-carrinho"></ul>
+        <p>Total: R$ <span id="total">0.00</span></p>
+        <button onclick="limparCarrinho()">Limpar carrinho</button>
+        <button onclick="salvarTotalECaminhar()">Finalizar Pedido</button>
+    </section>
+
+    <script>
+    atualizarCarrinho();
+    function adicionarAoCarrinho(productId) {
+        fetch('/add_carrinho/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ product_id: productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                atualizarCarrinho();
+            } else if (data.error) {
+                alert(data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function salvarTotalECaminhar() {
+        window.location.href = "/escolha_entrega/";
+    }
+
+    function atualizarCarrinho() {
+        fetch('/carrinho/')
+        .then(response => response.json())
+        .then(data => {
+            let listaCarrinho = document.getElementById("lista-carrinho");
+            let total = 0;
+
+            listaCarrinho.innerHTML = "";
+            data.products.forEach((item, index) => {
+                let li = document.createElement("li");
+                li.innerHTML = `${item.name} - R$ ${parseFloat(item.price).toFixed(2)}  
+                <button onclick="removerItem(${index})">❌ Excluir</button>`;
+                listaCarrinho.appendChild(li);
+                total += item.price;
+            });
+
+            document.getElementById("total").textContent = parseFloat(data.total).toFixed(2);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function removerItem(index) {
+        fetch('/remove_carrinho/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ product_id: index })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                atualizarCarrinho();
+            } else if (data.error) {
+                alert(data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function limparCarrinho() {
+        fetch('/clear_carrinho/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                atualizarCarrinho();
+            } else if (data.error) {
+                alert(data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    </script>
+{% endblock %}
